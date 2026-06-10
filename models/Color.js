@@ -3,7 +3,8 @@ import { Schema, model } from 'mongoose';
 const ColorSchema = Schema ({
     nombre:{
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     valor:{
         type: String,
