@@ -22,10 +22,10 @@ export const crearCategoria = async (req, res) => {
 
 export const obtenerCategorias = async (req, res) => {
     try{
-        const categoria = await categoria.find({});
+        const categorias = await Categoria.find({});
         res.status(201).json({
             ok: true,
-            categoria
+            categorias
         });
     }
     catch(error){
