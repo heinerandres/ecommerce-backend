@@ -1,4 +1,5 @@
 import Categoria from '../../models/Categoria.js';
+import Producto from '../../models/Producto.js';
 
 export const crearCategoria = async (req, res) => {
 
@@ -22,14 +23,44 @@ export const crearCategoria = async (req, res) => {
 
 export const obtenerCategorias = async (req, res) => {
     try{
-        const categoria = await categoria.find({});
+       
+        console.log("obtener categorias");
+        const categorias = await Categoria.find({});
+
+        const categoriasConCantidad = await Promise.all(
+            categorias.map(async (Categoria) => {
+                const cantidadCategorias = await Producto.countDocuments({
+                    Categoria: Producto._id
+                });
+
+            return {
+                ...Categoria.toObject(),
+                cantidadCategorias
+            };
+            })
+        );
+
+
         res.status(201).json({
             ok: true,
-            categoria
+            categorias: categoriasConCantidad
         });
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
     catch(error){
-        console.log("no se pudieron obtener los categoria");
+        console.log("no se pudieron obtener las categoria");
         console.log(error);
         res.status(500).json({
             ok: false,
