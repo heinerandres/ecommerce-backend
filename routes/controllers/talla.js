@@ -24,23 +24,18 @@ export const crearTalla = async (req, res) => {
 
 export const obtenerTallas = async (req, res) => {
     try{
-        console.log("obtener Tallas");
         const tallas = await Talla.find({});
-
         const tallasConCantidad = await Promise.all(
             tallas.map(async (talla) => {
                 const cantidadProductos = await Producto.countDocuments({
                     talla: talla._id
                 });
-
             return {
                 ...talla.toObject(),
                 cantidadProductos
             };
             })
         );
-
-
         res.status(201).json({
             ok: true,
             tallas: tallasConCantidad
@@ -57,8 +52,6 @@ export const obtenerTallas = async (req, res) => {
 }
 
 export const tallaByValor = async (req, res) => {
-    console.log("talla por valor");
-    console.log(req.body);
     try{
         const talla = await Talla.findOne(req.body);
         res.status(201).json({
@@ -78,8 +71,6 @@ export const tallaByValor = async (req, res) => {
 
 export const editarTalla = async (req, res) => {
     const id = req.body;
-    console.log(id);
-    console.log(req.body);
     try {
         const tallaActualizada = await Talla.findByIdAndUpdate(
             id,
@@ -109,23 +100,19 @@ export const editarTalla = async (req, res) => {
 export const eliminarTalla = async (req, res) => {
     try {
         const id  = req.body;
-
         const talla = await Talla.findByIdAndDelete(id);
-
         if (!talla) {
             return res.status(404).json({
                 ok: false,
                 msg: 'Talla no encontrado'
             });
         }
-
         res.status(200).json({
             ok: true,
             msg: 'Talla eliminado'
         });
     } catch (error) {
         console.log(error);
-
         res.status(500).json({
             ok: false,
             msg: 'Por favor hable con el administrador'
