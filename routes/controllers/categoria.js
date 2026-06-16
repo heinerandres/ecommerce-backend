@@ -1,3 +1,4 @@
+
 import Categoria from '../../models/Categoria.js';
 import Producto from '../../models/Producto.js';
 
@@ -47,17 +48,6 @@ export const obtenerCategorias = async (req, res) => {
         });
 
 
-
-
-
-
-
-
-
-
-
-
-
     }
     catch(error){
         console.log("no se pudieron obtener las categoria");
@@ -67,4 +57,26 @@ export const obtenerCategorias = async (req, res) => {
             msg: 'Por favor hable con el administrador'
         });
     }
+
 }
+
+export const obtenerCategoriaByNombre = async (req, res) => {
+    try {
+        
+        console.log("obtener Categoria Por Nombre");
+        const categoria = await Categoria.find({nombre: req.body.nombre});
+            res.status(201).json({
+                ok: true,
+                categoria,
+            });
+        }
+    catch(error){
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Por favor hable con el administrador'
+        });
+    }
+}
+
+

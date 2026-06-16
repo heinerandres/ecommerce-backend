@@ -9,12 +9,12 @@ import {validarCampos} from './middlewares/validarCampos.js';
 
 const router = Router();
 
-import { crearCategoria, obtenerCategorias } from '../routes/controllers/categoria.js'; 
+import { crearCategoria, obtenerCategorias, obtenerCategoriaByNombre} from '../routes/controllers/categoria.js'; 
 
 router.post( 
     '/insertar', 
     [
-        check('nombre', 'El nombre del usuario es obligatorio').not().isEmpty(),
+        check('nombre', 'El nombre de la categoria es obligatorio').not().isEmpty(),
         validarCampos
     ] , 
     crearCategoria );
@@ -24,5 +24,13 @@ router.get(
     obtenerCategorias
 );
 
+router.post(
+    '/obtenerCategoriaByNombre',
+    [
+        check('nombre', 'El nombre de la categoria es obligatorio').not().isEmpty(),
+        validarCampos
+    ], 
+    obtenerCategoriaByNombre
+)
 
 export default router;

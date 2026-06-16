@@ -27,6 +27,8 @@ export const obtenerColor = async (req, res) => {
             ok: true,
             color
         });
+
+            
     }
     catch(error){
         console.log("no se pudieron obtener los color");
