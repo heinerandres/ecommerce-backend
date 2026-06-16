@@ -3,7 +3,8 @@ import { Schema, model } from 'mongoose';
 const TallaSchema = Schema ({
     valor:{
         type: String,
-        required: true
+        required: true,
+        unique: true
     }
 });
 
