@@ -24,10 +24,10 @@ export const crearProducto = async (req, res) => {
 export const obtenerProductos = async (req, res) => {
     try{
         console.log("productos");
-        const producto = await Producto.find({});
+        const productos = await Producto.find({});
         res.status(201).json({
             ok: true,
-            producto
+            productos
         });
     }
     catch(error){

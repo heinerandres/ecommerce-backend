@@ -40,6 +40,8 @@ const startServer = async () => {
     
     app.use('/api/talla', tallaRoutes);
 
+    
+
 
     
 
