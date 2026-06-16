@@ -37,6 +37,8 @@ export const obtenerColor = async (req, res) => {
             ok: true,
             colores: coloresConCantidad
         });
+
+            
     }
     catch(error){
         console.log("no se pudieron obtener los color");
