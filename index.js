@@ -10,6 +10,7 @@ import carritoRoutes from './routes/carrito.js';
 import categoriaRoutes from './routes/categoria.js';
 import colorRoutes from './routes/color.js';
 import tallaRoutes from './routes/talla.js'; 
+import slugRoutes from './routes/slug.js'; 
 
 const app = express();
 
@@ -21,6 +22,7 @@ const startServer = async () => {
 
     app.use(cors());
     app.use(express.json());
+    /* app.use(express.urlencoded({ extended: true })); */
 
 
     app.use(express.static('public'));
@@ -39,6 +41,8 @@ const startServer = async () => {
     app.use('/api/color', colorRoutes);
     
     app.use('/api/talla', tallaRoutes);
+
+    app.use('/api/slug', slugRoutes);
 
     
 

@@ -1,35 +1,14 @@
 import { Schema, model } from 'mongoose';
 
 const ProductoSchema = Schema ({
-    //nombre, img1, img2, img3, img4, img5, descripcion, precio, cantidad
-    
         nombre: {
             type: String,
-            required: true
+            required: true,
+            unique: true
         },
         slug: {
-            type: String,
-            required: true,
-        },
-        categoria: {
             type: Schema.ObjectId,
-            ref: 'Categoria'
-        },
-        img1: {
-            type: String,
-            require: true
-        },
-        img2: {
-            type: String,
-            require: true
-        },
-        img3: {
-            type: String,
-            require: true
-        },
-        img4: {
-            type: String,
-            require: true
+            ref: 'Slug'
         },
         descripcion: {
             type: String,

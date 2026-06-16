@@ -4,7 +4,24 @@ import Producto from'../../models/Producto.js';
 export const crearProducto = async (req, res) => {
 
     try{
-        const producto = new Producto( req.body );
+
+        console.log(req.body);
+
+        const producto = new Producto({
+            ...req.body,
+            img1: req.files?.img1?.[0]
+                ? `/uploads/${req.files.img1[0].filename}`
+                : null,
+            img2: req.files?.img2?.[0]
+                ? `/uploads/${req.files.img2[0].filename}`
+                : null,
+            img3: req.files?.img3?.[0]
+                ? `/uploads/${req.files.img3[0].filename}`
+                : null,
+            img4: req.files?.img4?.[0]
+                ? `/uploads/${req.files.img4[0].filename}`
+                : null
+        });
         await producto.save();
 
         res.status(201).json({
