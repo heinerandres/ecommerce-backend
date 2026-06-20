@@ -11,24 +11,15 @@ import upload from '../storage/imagenes.js';
 
 const router = Router();
 
-import { crearProducto, obtenerProductos, obtenerProductoBySlug } from '../routes/controllers/producto.js';
+import { crearProducto, editarProducto, obtenerProductos, obtenerProductoBySlug } from '../routes/controllers/producto.js';
 
 router.post( 
     '/insertar', 
-    upload.fields([
-        { name: "img1", maxCount: 1 },
-        { name: "img2", maxCount: 1 },
-        { name: "img3", maxCount: 1 },
-        { name: "img4", maxCount: 1 }
-    ]),
     [
-        check('nombre', 'El nombre del usuario es obligatorio').not().isEmpty(),
-        check('categoria', 'La categoria es obligatoria').not().isEmpty(),
+        check('nombre', 'El nombre es obligatorio').not().isEmpty(),
+        check('slug', 'El slug es obligatorio').not().isEmpty(),
         check('descripcion', 'La descripción es obligatoria').not().isEmpty(),
-        check('talla', 'La talla es obligatoria').not().isEmpty(),
-        check('color', 'El color es obligatoria').not().isEmpty(),
-        check('precio', 'El precio es obligatorio').not().isEmpty(),
-        check('cantidad', 'La cantidad es obligatoria').not().isEmpty(),
+        check('categoria', 'La categoria es obligatoria').not().isEmpty(),
         validarCampos
     ] , 
     crearProducto );
@@ -45,6 +36,24 @@ router.post(
         validarCampos
     ], 
     obtenerProductoBySlug
-)
+);
+
+router.put(
+    '/editar',
+    upload.fields([
+        { name: 'img1', maxCount: 1 },
+        { name: 'img2', maxCount: 1 },
+        { name: 'img3', maxCount: 1 },
+        { name: 'img4', maxCount: 1 },
+    ]),
+    [
+        check('nombre', 'El nombre es obligatorio').not().isEmpty(),
+        check('slug', 'El slug es obligatorio').not().isEmpty(),
+        check('descripcion', 'La descripción es obligatoria').not().isEmpty(),
+        check('categoria', 'La categoria es obligatoria').not().isEmpty(),
+        validarCampos
+    ],
+    editarProducto
+);
 
 export default router;

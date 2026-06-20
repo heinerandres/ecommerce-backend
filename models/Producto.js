@@ -1,35 +1,31 @@
 import { Schema, model } from 'mongoose';
 
 const ProductoSchema = Schema ({
-        nombre: {
-            type: String,
-            required: true,
-            unique: true
-        },
-        slug: {
-            type: Schema.ObjectId,
-            ref: 'Slug'
-        },
-        descripcion: {
-            type: String,
-            require: true
-        },
-        talla: {
-            type: Schema.ObjectId,
-            ref: 'Talla'
-        },
-        color: {
-            type: Schema.ObjectId,
-            ref: 'Color'
-        },
-        precio: {
-            type: Number,
-            require: true
-        },
-        cantidad: {
-            type: Number,
-            require: true
-        },
-    });
+    nombre: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    slug: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    descripcion: {
+        type: String,
+        require: true
+    },
+    categoria: {
+        type: Schema.ObjectId,
+        ref: 'Categoria',
+        required: true
+    },
+    precio: {
+        type: Number
+    },
+    cantidad: {
+        type: Number
+    },
+});
 
 export default model( 'Producto', ProductoSchema );
