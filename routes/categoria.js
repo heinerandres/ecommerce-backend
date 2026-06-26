@@ -9,7 +9,7 @@ import {validarCampos} from './middlewares/validarCampos.js';
 
 const router = Router();
 
-import { crearCategoria, obtenerCategorias, obtenerCategoriaByNombre} from '../routes/controllers/categoria.js'; 
+import { crearCategoria, obtenerCategorias, obtenerCategoriaByNombre, editarCategoria, eliminarCategoria} from '../routes/controllers/categoria.js'; 
 
 router.post( 
     '/insertar', 
@@ -32,5 +32,26 @@ router.post(
     ], 
     obtenerCategoriaByNombre
 )
+
+
+router.put(
+    '/editar',
+    [
+        check('nombre', 'El nombre es obligatorio').not().isEmpty(),
+        validarCampos
+    ],
+    editarCategoria
+);
+
+
+router.delete(
+    '/eliminarCategoria',
+    [
+        check('_id', 'El ID de la categoria es obligatorio').not().isEmpty(),
+        validarCampos
+    ],
+    eliminarCategoria
+);
+
 
 export default router;

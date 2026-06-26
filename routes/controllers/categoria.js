@@ -64,7 +64,7 @@ export const obtenerCategoriaByNombre = async (req, res) => {
     try {
         
         console.log("obtener Categoria Por Nombre");
-        const categoria = await Categoria.find({nombre: req.body.nombre});
+        const categoria = await Categoria.findOne({nombre: req.body.nombre});
             res.status(201).json({
                 ok: true,
                 categoria,
@@ -77,6 +77,61 @@ export const obtenerCategoriaByNombre = async (req, res) => {
             msg: 'Por favor hable con el administrador'
         });
     }
-}
+
+} 
+
+export const editarCategoria= async (req, res) => {
+    const nombre = req.body;
+    try {
+         console.log("editarCategoria");
+        const categoriaActualizada = await Categoria.findByIdAndUpdate(
+            nombre,
+            req.body,
+            { new: true } // devuelve el documento actualizado
+        );
+        if (!categoriaActualizada) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'Categoria no encontrada'
+            });
+        }
+        res.status(200).json({
+            ok: true,
+            color: categoriaActualizada
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Por favor hable con el administrador'
+        });
+    }
+};
+
+
+export const eliminarCategoria = async (req, res) => {
+    try {
+        console.log("eliminar Categoria")
+        const id  = req.body;
+        const categoria = await Categoria.findByIdAndDelete(id);
+        if (!id) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'Categoria no encontrado'
+            });
+        }
+        res.status(200).json({
+            ok: true,
+            msg: 'Categoria eliminada'
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Por favor hable con el administrador'
+        });
+    }
+};
+
 
 
