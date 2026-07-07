@@ -29,6 +29,33 @@ export const crearProducto = async (req, res) => {
 }
 
 export const editarProducto = async (req, res) => {
+    const id = req.body;
+    try {
+        const productoActualizado = await Producto.findByIdAndUpdate(
+            id,
+            req.body,
+            { new: true } // devuelve el documento actualizado
+        );
+        if (!productoActualizado) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'Producto no encontrado'
+            });
+        }
+        res.status(200).json({
+            ok: true,
+            producto: productoActualizado
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Por favor hable con el administrador'
+        });
+    }
+};
+
+export const editarProductoConImagenes = async (req, res) => {
     try {
         const { _id, ...datosProducto } = req.body;
         const producto = await Producto.findByIdAndUpdate(
@@ -92,7 +119,7 @@ export const editarProducto = async (req, res) => {
 export const obtenerProductos = async (req, res) => {
     try{
         console.log("productos");
-        const productos = await Producto.find({});
+        const productos = await Producto.find();
         res.status(201).json({
             ok: true,
             productos
@@ -111,7 +138,8 @@ export const obtenerProductos = async (req, res) => {
 export const obtenerProductoBySlug = async (req, res) => {
     try {
         console.log("obtenerProducto");
-        const producto = await Producto.findOne({slug: req.body.slug});
+        const slug = req.body.slug;
+        const producto = await Producto.findOne({slug});
             res.status(201).json({
                 ok: true,
                 producto,
@@ -125,3 +153,4 @@ export const obtenerProductoBySlug = async (req, res) => {
         });
     }
 }
+

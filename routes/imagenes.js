@@ -9,7 +9,7 @@ import {validarCampos} from './middlewares/validarCampos.js';
 
 const router = Router();
 
-import { obtenerImagenesByProducto } from './controllers/imagenes.js';
+import { obtenerImagenesByProducto, obtenerImagenes } from './controllers/imagenes.js';
 
 router.post(
     '/obtenerImagenesByProducto',
@@ -19,5 +19,12 @@ router.post(
     ], 
     obtenerImagenesByProducto
 );
+
+router.get(
+    '/',
+    obtenerImagenes
+);
+
+
 
 export default router;

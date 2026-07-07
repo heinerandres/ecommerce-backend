@@ -85,7 +85,7 @@ export const editarTalla = async (req, res) => {
         }
         res.status(200).json({
             ok: true,
-            color: tallaActualizada
+            talla: tallaActualizada
         });
     } catch (error) {
         console.log(error);

@@ -9,15 +9,15 @@ import {validarCampos} from './middlewares/validarCampos.js';
 
 const router = Router();
 
-import { crearCarrito, editarCarrito, obtenerCarrito } from '../routes/controllers/carrito.js';
+import { crearCarrito, agregarProductoCarrito, obtenerCarrito } from '../routes/controllers/carrito.js';
 
 router.post( 
     '/insertar', 
     crearCarrito );
 
 router.put(
-    '/actualizarCarrito',
-    editarCarrito
+    '/insertarProducto',
+    agregarProductoCarrito
 );
 
 router.post(

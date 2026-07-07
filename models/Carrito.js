@@ -14,6 +14,11 @@ const CarritoSchema = Schema ({
             type: Schema.ObjectId, 
             ref: 'Producto'
         },
+        variante: {
+            type: Schema.Types.ObjectId,
+            ref: "Producto_variantes",
+            default: null
+        },
         cantidad: {
             type: Number,
             req: true

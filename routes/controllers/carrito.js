@@ -1,7 +1,9 @@
 
 import Carrito from '../../models/Carrito.js';
 import Producto from '../../models/Producto.js';
+import Producto_variantes from '../../models/Producto_variantes.js';
 import ObjectId from 'mongodb';
+import mongoose from "mongoose";
 
 export const obtenerCarrito = async (req, res) => {
     try {
@@ -36,22 +38,6 @@ export const obtenerCarrito = async (req, res) => {
         });
     }
 }
-/* export const obtenerCarrito = async (req, res) => {
-    try {
-        console.log("obtenerCarrito");
-        const carrito = await Carrito.findOne({usuario_id: req.body.usuario_id});
-            res.status(201).json({
-                ok: true,
-                carrito,
-            });
-    } catch(error){
-        console.log(error);
-        res.status(500).json({
-            ok: false,
-            msg: 'Por favor hable con el administrador'
-        });
-    }
-} */
 
 export const crearCarrito = async (req, res) => {
     try {
@@ -78,178 +64,119 @@ export const crearCarrito = async (req, res) => {
     }
 }
 
-export const editarCarrito = async (req, res) => {
-    try{ 
-        console.log("editarCarrito");
-        console.log(req.body);
-        const {_id, productos} = req.body;
-        console.log(_id);
-        console.log(productos);
-        const carritoActualizado = await Carrito.findByIdAndUpdate(
-            _id,
-            {
-                productos: productos
-            },
-            {
-                new: true
-            }
-        );
-        res.json({
-            ok: true,
-            carrito: carritoActualizado
-        });
-    }
-    catch(error){
-        console.log(error);
-        res.status(500).json({
-            ok: false,
-            msg: 'Por favor hable con el administrador'
-        });
-    }
-}
+export const agregarProductoCarrito = async(req, res) => {
+    const session = await mongoose.startSession();
+    try {
+        session.startTransaction();
 
-/* const pagarCarrito = async (req, res) => {
-    const carrito_id = req.body.carrito_id;
-    const estaPago = req.body.estaPago;
-    await Carrito.updateOne(
-        {_id: new ObjectId (carrito_id)},
-        {$set: { estaPago: estaPago}}
-    ).then(result => {
-        if(!result){
-            console.log("No se pudo actualizar");
-            res.status(500).json({
+        //agregar producto al carrito
+        //existe carrito?
+        //consulta si el producto ya esta en el carro
+        //     si está, suma la cantidad del carrito con la cantidad nueva
+        //     si no está, agrega el producto a la lista
+        //guarda el carro
+
+        console.log("agregar producto");
+        const _id = req.body._id;
+        const productoId = req.body.productoId;
+        const varianteId = req.body.varianteId;
+        const cantidad = req.body.cantidad;
+
+        //existe carrito?
+        const carrito = await Carrito.findOne({ _id }).session(session);
+        if(!carrito){
+            await session.abortTransaction();
+            return res.status(404).json({
                 ok: false,
-                msg: 'Por favor hable con el administrador'
-            });
-        }else {
-            console.log("se actualizó estaPago");
-            res.status(201).json({
-                ok: true
+                msg: "Carrito no encontrado"
             });
         }
-    }).catch(error => {
+        //producto en carrito?
+        if(varianteId == null){
+            const productoExistente = carrito.productos.find(
+            p =>
+                p.id.toString() === productoId 
+            );
+            //restar stock de tabla producto antes de sumarlo al carrito o agregarlo
+            const producto = await Producto.findById(productoId).session(session);
+            if(!producto){
+                await session.abortTransaction();
+                return res.status(404).json({
+                    ok:false,
+                    msg:"Producto no encontrado"
+                });
+            }
+            if(cantidad > producto.cantidad) {
+                await session.abortTransaction();
+                return res.status(409).json({
+                    ok: false,
+                    msg: "La cantidad solicitada es mayor que las existencias"
+                });
+            }
+            producto.cantidad -= cantidad;
+            await producto.save({ session });
+
+            if (productoExistente) productoExistente.cantidad += cantidad;
+            else{
+                carrito.productos.push({
+                    id: productoId,
+                    cantidad
+                });
+            };
+        }
+        //variante en carrito?
+        else{
+            const productoExistente = carrito.productos.find(
+            p =>
+                p.id.toString() === productoId &&
+                String(p.variante) === String(varianteId)
+            );
+            //restar stock de tabla producto antes de sumarlo al carrito o agregarlo
+            const variante = await Producto_variantes.findById(varianteId).session(session);
+            if(!variante){
+                await session.abortTransaction();
+                return res.status(404).json({
+                    ok:false,
+                    msg:"Variante no encontrada"
+                });
+            }
+            if(cantidad > variante.cantidad) {
+                await session.abortTransaction();
+                return res.status(409).json({
+                    ok: false,
+                    msg: "La cantidad solicitada es mayor que las existencias"
+                });
+            }
+            variante.cantidad -= cantidad;
+            await variante.save({ session });
+
+            if (productoExistente) productoExistente.cantidad += cantidad;
+            else{
+                carrito.productos.push({
+                    id: productoId,
+                    variante: varianteId ?? null,
+                    cantidad
+                });
+            };
+        }
+        
+        await carrito.save({ session });
+        // Confirmar cambios
+        await session.commitTransaction();
+
+        res.status(200).json({
+            ok: true,
+            carrito
+        });
+    } catch(error){
+        await session.abortTransaction();
         console.log(error);
         res.status(500).json({
             ok: false,
             msg: 'Por favor hable con el administrador'
         });
-    });
-} */
-
-export const respuestaActualizar = async (req, res) => {
-    sobreEscribirProductosCarrito(req, res).then( async () => {
-        const carrito = await Carrito.findOne({_id: new ObjectId(req.body.carrito_id)});
-        const productos_ids = carrito.productos;
-        const idProductosCarrito = productos_ids.map(item =>  item.id );
-        const productos = await Productos.find({ _id: { $in: idProductosCarrito} });
-        res.status(201).json({
-            ok: true,
-            msg: 'Actualización correcta',
-            carrito,
-            productos
-        });
-    });
-}
-
-export const sobreEscribirProductosCarrito = async (req, res) =>{
-    const carrito_id = req.body.carrito_id;
-    const actualizar = req.body.actualizar;
-    const insertar = req.body.insertar;
-    const eliminar = req.body.eliminar;
-    if(actualizar.length !== 0){
-        //actualizar
-        await actualizarCarrito(carrito_id, actualizar).then(result =>{
-            if(!result){
-                console.log("no se actualizaron registros");
-                res.status(500).json({
-                    ok: false,
-                    msg: 'Por favor hable con el administrador'
-                });
-            }else{
-                console.log("se actualizaron los registros");
-            }
-        }).catch(error => {
-            console.log(error);
-            res.status(500).json({
-                ok: false,
-                msg: 'Por favor hable con el administrador'
-            });
-        });
-    } if (insertar.length !== 0){
-        //insertar
-        await insertarProductosCarrito(carrito_id, insertar).then(result =>{
-            if(!result){
-                console.log("no se insertaron registros");
-                res.status(500).json({
-                    ok: false,
-                    msg: 'Por favor hable con el administrador'
-                });
-            }else{
-                console.log("se insertaron los registros");
-            }
-        }).catch(error => {
-            console.log(error);
-            res.status(500).json({
-                ok: false,
-                msg: 'Por favor hable con el administrador'
-            });
-        });
-    } if (eliminar.length !== 0){
-        //eliminar
-        await eliminarProductosCarrito(carrito_id, eliminar).then(result =>{
-            if(!result){
-                console.log("no se eliminaron registros");
-                res.status(500).json({
-                    ok: false,
-                    msg: 'Por favor hable con el administrador'
-                });
-            }else{
-                console.log("se eliminaron los registros");
-            }
-        }).catch(error => {
-            console.log(error);
-            res.status(500).json({
-                ok: false,
-                msg: 'Por favor hable con el administrador'
-            });
-        });
     }
-}
-
-export const insertarProductosCarrito = async(carrito_id, insertar)=>{
-    const result = await Carrito.updateOne(
-        { _id: new ObjectId(carrito_id)},
-        { $push: {productos: {$each: insertar }}},
-        { writeConcern: { w: 'majority'}}
-    );
-    return result;
-};
-
-export const eliminarProductosCarrito = async(carrito_id, eliminar)=> {
-    const result = await Carrito.updateOne(
-        { _id: new ObjectId(carrito_id)},
-        {$pull: {productos: {id: {$in: eliminar}}}},
-        { writeConcern: { w: 'majority'}}
-    );
-    return result;
-};
-
-
-export const actualizarCarrito = async (carrito_id, actualizar) => {
-    const filtros = actualizar.map((item, index) => ({
-        [`element${index}.id`]: new ObjectId(item.id)
-    }));
-
-    const set = actualizar.reduce((acc, item, index) => {
-        acc[`productos.$[element${index}].cantidad`] = item.cantidad;
-        return acc;
-    }, {});
-
-    const result = await Carrito.updateOne(
-        {_id: new ObjectId (carrito_id)},
-        {$set: set},
-        {arrayFilters: filtros},
-        { writeConcern: { w: 'majority'}}
-    );
-    return result;
+    finally{
+        session.endSession();
+    }
 }

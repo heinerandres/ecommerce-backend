@@ -43,7 +43,7 @@ const startServer = async () => {
     
     app.use('/api/talla', tallaRoutes);
 
-    app.use('/api/producto_variantes', producto_variantesRoutes);
+    app.use('/api/variantes', producto_variantesRoutes);
 
     app.use('/api/imagenes', imagenesRoutes);
 

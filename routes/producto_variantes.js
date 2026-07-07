@@ -10,7 +10,7 @@ import {validarCampos} from './middlewares/validarCampos.js';
 
 const router = Router();
 
-import { crearVariante, obtenerVariantes, obtenerVarianteById } from '../routes/controllers/producto_variantes.js';
+import { crearVariante, obtenerVariantes, editarVariante, eliminarVariante, getVariantesByProducto } from '../routes/controllers/producto_variantes.js';
 
 router.post( 
     '/insertar', 
@@ -27,13 +27,32 @@ router.get(
     obtenerVariantes
 );
 
-router.post(
-    '/obtenerProductoBySlug',
+router.post( 
+    '/getVariantesByProducto', 
     [
-        check('id', 'El id es obligatorio').not().isEmpty(),
+        check('producto', 'El producto es obligatorio').not().isEmpty(),
+        validarCampos
+    ] , 
+    getVariantesByProducto );
+
+router.put(
+    '/editar',
+    [
+        check('_id', 'El id es obligatorio').not().isEmpty(),
         validarCampos
     ], 
-    obtenerVarianteById
-)
+    editarVariante
+);
+
+router.delete(
+    '/eliminar',
+    [
+        check('_id', 'El id es obligatorio').not().isEmpty(),
+        validarCampos
+    ], 
+    eliminarVariante
+);
+
+
 
 export default router;
