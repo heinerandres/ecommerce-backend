@@ -180,3 +180,34 @@ export const agregarProductoCarrito = async(req, res) => {
         session.endSession();
     }
 }
+
+
+//consulta por productos no deberia incluir variantes, hacer consulta por variantes serparada
+export const obtenerProductosCarrito = async(req, res) => {
+    try{
+        const idsProductos = req.body.idsProductos;
+        const productos = await Producto.find({
+            _id: { $in: idsProductos }
+        })
+        .populate("categoria")
+        .populate({
+            path: "variantes",
+            populate: [
+                { path: "talla" },
+                { path: "color" },
+            ]
+        });
+        res.status(201).json({
+                ok: true,
+                productos
+            });
+    }
+    catch(error){
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Por favor hable con el administrador'
+        });
+    }
+}
+
