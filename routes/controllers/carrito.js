@@ -82,6 +82,8 @@ export const agregarProductoCarrito = async(req, res) => {
         const varianteId = req.body.varianteId;
         const cantidad = req.body.cantidad;
 
+        console.log(productoId);
+
         //existe carrito?
         const carrito = await Carrito.findOne({ _id }).session(session);
         if(!carrito){

@@ -5,7 +5,6 @@ const ImagenesSchema = Schema ({
     producto: {
         type: Schema.ObjectId,
         ref: 'Producto',
-        required: true
     },
     producto_variante: {
         type: Schema.ObjectId,

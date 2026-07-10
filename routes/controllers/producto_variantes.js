@@ -27,9 +27,9 @@ export const crearVariante = async (req, res) => {
 
 export const obtenerVariantes = async (req, res) => {
     try{
-        console.log("variantes");
-        console.log(req.body);
-        const variantes = await Producto_variantes.find({});
+        const variantes = await Producto_variantes.find({})
+        .populate("color")
+        .populate("talla");
         res.status(201).json({
             ok: true,
             variantes

@@ -16,11 +16,11 @@ const ProductoVariantesSchema = Schema ({
     },
     precio: {
         type: Number,
-        require: true
+        required: true
     },
     cantidad: {
         type: Number,
-        require: true
+        required: true
     },
 });
 

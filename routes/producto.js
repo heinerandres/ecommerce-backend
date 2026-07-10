@@ -11,7 +11,7 @@ import upload from '../storage/imagenes.js';
 
 const router = Router();
 
-import { crearProducto, editarProducto, editarProductoConImagenes, obtenerProductos, obtenerProductoBySlug } from '../routes/controllers/producto.js';
+import { crearProducto, editarProducto, editarProductoConImagenes, obtenerProductos, obtenerProductoBySlug, eliminarProducto, obtenerProductosConImagenes } from '../routes/controllers/producto.js';
 
 router.post( 
     '/insertar', 
@@ -27,6 +27,11 @@ router.post(
 router.get(
     '/',
     obtenerProductos
+);
+
+router.get(
+    '/productosConImagenes',
+    obtenerProductosConImagenes
 );
 
 router.post(
@@ -60,13 +65,19 @@ router.put(
         { name: 'img4', maxCount: 1 },
     ]),
     [
-        check('nombre', 'El nombre es obligatorio').not().isEmpty(),
-        check('slug', 'El slug es obligatorio').not().isEmpty(),
-        check('descripcion', 'La descripción es obligatoria').not().isEmpty(),
-        check('categoria', 'La categoria es obligatoria').not().isEmpty(),
+        check('_id', 'El _id es obligatorio').not().isEmpty(),
         validarCampos
     ],
     editarProductoConImagenes
+);
+
+router.delete(
+    '/eliminar',
+    [
+        check('_id', 'El id del color es obligatorio').not().isEmpty(),
+        validarCampos
+    ],
+    eliminarProducto
 );
 
 export default router;

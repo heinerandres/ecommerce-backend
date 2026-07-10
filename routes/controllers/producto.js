@@ -57,12 +57,8 @@ export const editarProducto = async (req, res) => {
 
 export const editarProductoConImagenes = async (req, res) => {
     try {
-        const { _id, ...datosProducto } = req.body;
-        const producto = await Producto.findByIdAndUpdate(
-            _id,
-            datosProducto,
-            { new: true }
-        );
+        const { _id } = req.body;
+        const producto = await Producto.findById(_id);
         if (!producto) {
             return res.status(404).json({
                 ok: false,
@@ -119,10 +115,39 @@ export const editarProductoConImagenes = async (req, res) => {
 export const obtenerProductos = async (req, res) => {
     try{
         console.log("productos");
-        const productos = await Producto.find();
+        const productos = await Producto.find()
+        .populate("variantes")
+        .populate("categoria")
+        .populate("imagenes");
         res.status(201).json({
             ok: true,
             productos
+        });
+    }
+    catch(error){
+        console.log("no se pudieron obtener los producto");
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Por favor hable con el administrador'
+        });
+    }
+}
+
+export const obtenerProductosConImagenes = async (req, res) => {
+    try{
+        console.log("productos");
+        const productos = await Producto.find()
+        .populate("variantes")
+        .populate("imagenes");
+
+        const visibles = productos.filter(
+            p=> p.imagenes.length > 0
+        );
+
+        res.status(201).json({
+            ok: true,
+            productos: visibles
         });
     }
     catch(error){
@@ -139,7 +164,13 @@ export const obtenerProductoBySlug = async (req, res) => {
     try {
         console.log("obtenerProducto");
         const slug = req.body.slug;
-        const producto = await Producto.findOne({slug});
+        const producto = await Producto.findOne({slug})
+        .populate({
+            path: "variantes",
+            populate: [{path: "color"},{path: "talla"}]
+        })
+        .populate("categoria");
+
             res.status(201).json({
                 ok: true,
                 producto,
@@ -153,4 +184,27 @@ export const obtenerProductoBySlug = async (req, res) => {
         });
     }
 }
+
+export const eliminarProducto = async (req, res) => {
+    try {
+        const id  = req.body;
+        const producto = await Producto.findByIdAndDelete(id);
+        if (!producto) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'Producto no encontrado'
+            });
+        }
+        res.status(200).json({
+            ok: true,
+            msg: 'Producto eliminado'
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Por favor hable con el administrador'
+        });
+    }
+};
 
