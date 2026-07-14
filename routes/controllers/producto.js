@@ -139,6 +139,7 @@ export const obtenerProductosConImagenes = async (req, res) => {
         console.log("productos");
         const productos = await Producto.find()
         .populate("variantes")
+        .populate("categoria")
         .populate("imagenes");
 
         const visibles = productos.filter(

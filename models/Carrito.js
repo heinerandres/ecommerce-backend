@@ -3,7 +3,6 @@ import { ObjectId } from 'mongodb';
 import Producto from '../models/Producto.js';
 
 const CarritoSchema = Schema ({
-//conUsuario, conArticulosCarrito, estaPago
   
     usuario_id: {
         type: String,

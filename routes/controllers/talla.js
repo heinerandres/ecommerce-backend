@@ -1,5 +1,5 @@
 
-import Talla from'../../models/Talla.js';
+import Talla from '../../models/Talla.js';
 import Producto from '../../models/Producto.js';
 
 export const crearTalla = async (req, res) => {

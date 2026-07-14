@@ -12,6 +12,7 @@ import colorRoutes from './routes/color.js';
 import tallaRoutes from './routes/talla.js'; 
 import imagenesRoutes from './routes/imagenes.js'; 
 import producto_variantesRoutes from './routes/producto_variantes.js';
+import direccionRoutes from './routes/direccion.js';
 
 const app = express();
 
@@ -46,6 +47,8 @@ const startServer = async () => {
     app.use('/api/variantes', producto_variantesRoutes);
 
     app.use('/api/imagenes', imagenesRoutes);
+
+    app.use('/api/direccion', direccionRoutes);
 
     
 
