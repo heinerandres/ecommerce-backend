@@ -21,6 +21,12 @@ export const crearProducto = async (req, res) => {
     catch(error){
         console.log("no se pudo guardar el producto");
         console.log(error);
+        if(error.code === 11000){
+            res.status(500).json({
+                ok: false,
+                msg: 'El producto ya existe'
+            });
+        }
         res.status(500).json({
             ok: false,
             msg: 'Por favor hable con el administrador'
@@ -48,6 +54,12 @@ export const editarProducto = async (req, res) => {
         });
     } catch (error) {
         console.log(error);
+        if(error.code === 11000){
+            res.status(500).json({
+                ok: false,
+                msg: 'El producto ya existe'
+            });
+        }
         res.status(500).json({
             ok: false,
             msg: 'Por favor hable con el administrador'
@@ -143,7 +155,8 @@ export const obtenerProductosConImagenes = async (req, res) => {
         .populate("imagenes");
 
         const visibles = productos.filter(
-            p=> p.imagenes.length > 0
+            p=> p.imagenes.length > 0 &&
+            ((p.precio !== undefined && p.cantidad !== undefined ) || p.variantes.length > 0)
         );
 
         res.status(201).json({

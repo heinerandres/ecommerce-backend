@@ -11,7 +11,12 @@ export const crearColor = async (req, res) => {
         });
     }
     catch(error){
-        console.log("no se pudo guardar el color");
+        if(error.code === 11000){
+            res.status(500).json({
+            ok: false,
+            msg: 'El nombre del color ya existe'
+        });
+        }
         res.status(500).json({
             ok: false,
             msg: 'Por favor hable con el administrador'
@@ -86,6 +91,12 @@ export const editarColor = async (req, res) => {
         });
     } catch (error) {
         console.log(error);
+        if(error.code === 11000){
+            res.status(500).json({
+                ok: false,
+                msg: 'El nombre del color ya existe'
+            });
+        }
         res.status(500).json({
             ok: false,
             msg: 'Por favor hable con el administrador'

@@ -15,6 +15,12 @@ export const crearTalla = async (req, res) => {
     }
     catch(error){
         console.log("no se pudo guardar el talla");
+        if(error.code === 11000){
+            res.status(500).json({
+                ok: false,
+                msg: 'La Talla ya existe'
+            });
+        }
         res.status(500).json({
             ok: false,
             msg: 'Por favor hable con el administrador'
@@ -89,6 +95,12 @@ export const editarTalla = async (req, res) => {
         });
     } catch (error) {
         console.log(error);
+        if(error.code === 11000){
+            res.status(500).json({
+                ok: false,
+                msg: 'La Talla ya existe'
+            });
+        }
         res.status(500).json({
             ok: false,
             msg: 'Por favor hable con el administrador'
