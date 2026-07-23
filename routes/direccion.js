@@ -9,7 +9,7 @@ import {validarCampos} from './middlewares/validarCampos.js';
 
 const router = Router();
 
-import { crearDireccion, obtenerDireccion } from '../routes/controllers/direccion.js';
+import { crearDireccion, obtenerDireccion, editarDireccion } from '../routes/controllers/direccion.js';
 
 router.post( 
     '/insertar', 
@@ -34,6 +34,22 @@ router.post(
         validarCampos
     ] , 
     obtenerDireccion 
+);
+
+router.put( 
+    '/editar', 
+    [
+        check('carrito', 'El id del carrito es obligatorio').not().isEmpty(),
+        check('nombres', 'El campo nombres es obligatorio').not().isEmpty(),
+        check('apellidos', 'El campo apellidos es obligatorio').not().isEmpty(),
+        check('direccion', 'La direcion es obligatoria').not().isEmpty(),
+        check('codigoPostal', 'El codigo postal es obligatorio').not().isEmpty(),
+        check('ciudad', 'La ciudad es obligatoria').not().isEmpty(),
+        check('pais', 'El pais es obligatorio').not().isEmpty(),
+        check('telefono', 'El telefono es obligatorio').not().isEmpty(),
+        validarCampos
+    ] , 
+    editarDireccion 
 );
 
 

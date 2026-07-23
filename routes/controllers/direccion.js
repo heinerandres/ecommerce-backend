@@ -40,3 +40,37 @@ export const obtenerDireccion = async (req, res) => {
         });
     }
 }
+
+export const editarDireccion = async (req, res) => {
+    const id = req.body.carrito;
+    console.log(id);
+    try {
+        const direccionActualizada = await Direccion.findOneAndUpdate(
+            { carrito: id },
+            req.body,
+            { new: true } // devuelve el documento actualizado
+        );
+        if (!direccionActualizada) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'Direccion no encontrada'
+            });
+        }
+        res.status(200).json({
+            ok: true,
+            direccion: direccionActualizada
+        });
+    } catch (error) {
+        console.log(error);
+        if(error.code === 11000){
+            res.status(500).json({
+                ok: false,
+                msg: 'La Direccion ya existe'
+            });
+        }
+        res.status(500).json({
+            ok: false,
+            msg: 'Por favor hable con el administrador'
+        });
+    }
+};

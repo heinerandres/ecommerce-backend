@@ -1,6 +1,6 @@
 
 import Talla from '../../models/Talla.js';
-import Producto from '../../models/Producto.js';
+import Producto_variantes from'../../models/Producto_variantes.js';
 
 export const crearTalla = async (req, res) => {
 
@@ -33,7 +33,7 @@ export const obtenerTallas = async (req, res) => {
         const tallas = await Talla.find({});
         const tallasConCantidad = await Promise.all(
             tallas.map(async (talla) => {
-                const cantidadProductos = await Producto.countDocuments({
+                const cantidadProductos = await Producto_variantes.countDocuments({
                     talla: talla._id
                 });
             return {
