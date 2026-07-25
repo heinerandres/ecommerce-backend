@@ -20,7 +20,7 @@ const CarritoSchema = Schema ({
         },
         cantidad: {
             type: Number,
-            req: true
+            required: true
         },
     } ]
 });

@@ -6,7 +6,6 @@ import fs from 'fs';
 import fsPromises from "fs/promises";
 
 export const crearProducto = async (req, res) => {
-
     try{
         console.log(req.body);
 
