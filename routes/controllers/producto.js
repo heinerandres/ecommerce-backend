@@ -149,7 +149,13 @@ export const obtenerProductosConImagenes = async (req, res) => {
     try{
         console.log("productos");
         const productos = await Producto.find()
-        .populate("variantes")
+        .populate({
+            path: "variantes",
+            populate: [
+                { path: "color" },
+                { path: "talla" }
+            ]
+        })
         .populate("categoria")
         .populate("imagenes");
 

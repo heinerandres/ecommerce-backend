@@ -8,7 +8,6 @@ const PedidoSchema = Schema ({
     direccion_id: {
         type: Schema.ObjectId,
         ref: 'Direccion',
-        required: true,
     },
     tipoPedido:{
         type: String,
@@ -21,6 +20,10 @@ const PedidoSchema = Schema ({
     fecha:{
         type: Date,
         default: Date.now
+    },
+    estado: {
+        type: String,
+        default: "Pendiente",
     },
     total: {
         type: Number,

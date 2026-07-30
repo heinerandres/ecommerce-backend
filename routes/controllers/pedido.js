@@ -39,7 +39,7 @@ export const colocarOrden = async (req, res) => {
             throw new Error("Dirección no encontrada.");
         }
 
-        const pedido = await crearPedido(carrito, direccion._id, "En Página", session);
+        const pedido = await crearPedido(carrito, direccion._id, "EnPagina", session);
 
         carrito.productos = [];
 
@@ -139,3 +139,86 @@ export const crearPedido = async (
     await pedido.save({ session });
     return pedido;
 }
+
+
+export const obtenerPedidos = async (req, res) => {
+    try{
+        console.log("pedidos");
+        const pedidos = await Pedido.find()
+        .populate("direccion_id")
+        .populate("productos.id")
+        .populate("productos.variante")
+        res.status(201).json({
+            ok: true,
+            pedidos
+        });
+    }
+    catch(error){
+        console.log("no se pudieron obtener los pedidos");
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Por favor hable con el administrador'
+        });
+    }
+}
+
+export const colocarPedidoEnTienda = async (req, res) => {
+    console.log(req.body.pedido);
+    const { pedido } = req.body;
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    try {
+        await descontarStock(pedido, session);
+        const [nuevoPedido] = await Pedido.create(
+            [pedido],
+            { session }
+        );
+        await session.commitTransaction();
+        return res.status(201).json({
+            ok: true,
+            pedido: nuevoPedido
+        });
+
+    } catch (error) {
+        await session.abortTransaction();
+        return res.status(500).json({
+            ok: false,
+            msg: error.message
+        });
+    }
+    finally{
+        await session.endSession();
+    }
+}
+
+
+export const actualizarEstadoPedido = async ( req, res) => {
+    try {
+        const { idPedido } = req.body;
+        const { estado } = req.body;
+
+        console.log(idPedido);
+
+        const pedido = await Pedido.findById(idPedido);
+        if (!pedido) {
+            return res.status(404).json({
+                message: "Pedido no encontrado"
+            });
+        }
+        pedido.estado = estado;
+        await pedido.save();
+        return res.status(200).json({
+            ok: true,
+            message: "Estado actualizado correctamente",
+            pedido
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            ok:false,
+            message: "Error al actualizar estado"
+        });
+
+    }
+};
