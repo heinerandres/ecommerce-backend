@@ -1,6 +1,6 @@
 
-import Talla from'../../models/Talla.js';
-import Producto from '../../models/Producto.js';
+import Talla from '../../models/Talla.js';
+import Producto_variantes from'../../models/Producto_variantes.js';
 
 export const crearTalla = async (req, res) => {
 
@@ -15,6 +15,12 @@ export const crearTalla = async (req, res) => {
     }
     catch(error){
         console.log("no se pudo guardar el talla");
+        if(error.code === 11000){
+            res.status(500).json({
+                ok: false,
+                msg: 'La Talla ya existe'
+            });
+        }
         res.status(500).json({
             ok: false,
             msg: 'Por favor hable con el administrador'
@@ -27,7 +33,7 @@ export const obtenerTallas = async (req, res) => {
         const tallas = await Talla.find({});
         const tallasConCantidad = await Promise.all(
             tallas.map(async (talla) => {
-                const cantidadProductos = await Producto.countDocuments({
+                const cantidadProductos = await Producto_variantes.countDocuments({
                     talla: talla._id
                 });
             return {
@@ -85,10 +91,16 @@ export const editarTalla = async (req, res) => {
         }
         res.status(200).json({
             ok: true,
-            color: tallaActualizada
+            talla: tallaActualizada
         });
     } catch (error) {
         console.log(error);
+        if(error.code === 11000){
+            res.status(500).json({
+                ok: false,
+                msg: 'La Talla ya existe'
+            });
+        }
         res.status(500).json({
             ok: false,
             msg: 'Por favor hable con el administrador'

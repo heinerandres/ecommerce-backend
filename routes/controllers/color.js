@@ -1,5 +1,5 @@
 import Color from '../../models/Color.js';
-import Producto from '../../models/Producto.js';
+import Producto_variantes from'../../models/Producto_variantes.js';
 
 export const crearColor = async (req, res) => {
     try{
@@ -11,7 +11,12 @@ export const crearColor = async (req, res) => {
         });
     }
     catch(error){
-        console.log("no se pudo guardar el color");
+        if(error.code === 11000){
+            res.status(500).json({
+            ok: false,
+            msg: 'El nombre del color ya existe'
+        });
+        }
         res.status(500).json({
             ok: false,
             msg: 'Por favor hable con el administrador'
@@ -24,7 +29,7 @@ export const obtenerColor = async (req, res) => {
         const colores = await Color.find({});
         const coloresConCantidad = await Promise.all(
             colores.map(async (color) => {
-                const cantidadProductos = await Producto.countDocuments({
+                const cantidadProductos = await Producto_variantes.countDocuments({
                     color: color._id
                 });
             return {
@@ -88,6 +93,12 @@ export const editarColor = async (req, res) => {
         });
     } catch (error) {
         console.log(error);
+        if(error.code === 11000){
+            res.status(500).json({
+                ok: false,
+                msg: 'El nombre del color ya existe'
+            });
+        }
         res.status(500).json({
             ok: false,
             msg: 'Por favor hable con el administrador'
