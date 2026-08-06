@@ -163,6 +163,33 @@ export const obtenerPedidos = async (req, res) => {
     }
 }
 
+export const obtenerPedidosCliente = async (req, res) => {
+    try {
+        const { usuario_id } = req.body;
+
+        console.log(req.body.usuario_id);
+
+        const pedidos = await Pedido.find({usuario_id})
+            .populate("direccion_id")
+            .populate("productos.id")
+            .populate("productos.variante");
+
+        res.status(200).json({
+            ok: true,
+            pedidos
+        });
+
+    } catch (error) {
+        console.log("No se pudieron obtener los pedidos");
+        console.log(error);
+
+        res.status(500).json({
+            ok: false,
+            msg: "Por favor hable con el administrador"
+        });
+    }
+};
+
 export const colocarPedidoEnTienda = async (req, res) => {
     console.log(req.body.pedido);
     const { pedido } = req.body;

@@ -7,7 +7,7 @@ import Router from 'express';
 import {check} from 'express-validator';
 import {validarCampos} from './middlewares/validarCampos.js';
 
-import { colocarOrden, obtenerPedidos, colocarPedidoEnTienda, actualizarEstadoPedido } from '../routes/controllers/pedido.js';
+import { colocarOrden, obtenerPedidos, colocarPedidoEnTienda, actualizarEstadoPedido, obtenerPedidosCliente } from '../routes/controllers/pedido.js';
 
 const router = Router();
 
@@ -33,6 +33,15 @@ router.post(
         validarCampos
     ] , 
     colocarPedidoEnTienda 
+);
+
+router.post( 
+    '/obtenerPedidosCliente', 
+    [
+        check('usuario_id', 'El usuario_id es obligatorio').not().isEmpty(),
+        validarCampos
+    ] , 
+    obtenerPedidosCliente 
 );
 
 router.put( 
