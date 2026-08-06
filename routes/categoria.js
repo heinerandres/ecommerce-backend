@@ -25,13 +25,33 @@ router.get(
 );
 
 router.post(
-    '/obtenerCategoriaByNombre',
+    '/categoriaByNombre',
     [
         check('nombre', 'El nombre de la categoria es obligatorio').not().isEmpty(),
         validarCampos
-    ], 
-    obtenerCategoriaByNombre
-)
+    ],
+    categoriaByNombre
+);
+
+router.put(
+    '/editar',
+    [
+        check('_id', 'El id es obligatorio').not().isEmpty(),
+        check('nombre', 'El nombre es obligatorio').not().isEmpty(),
+        validarCampos
+    ],
+    editarCategoria
+);
+
+router.delete(
+    '/eliminar',
+    [
+        check('_id', 'El id de la categoria es obligatorio').not().isEmpty(),
+        validarCampos
+    ],
+    eliminarCategoria
+);
+
 
 
 router.put(

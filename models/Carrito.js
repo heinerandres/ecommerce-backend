@@ -3,7 +3,6 @@ import { ObjectId } from 'mongodb';
 import Producto from '../models/Producto.js';
 
 const CarritoSchema = Schema ({
-//conUsuario, conArticulosCarrito, estaPago
   
     usuario_id: {
         type: String,
@@ -14,9 +13,14 @@ const CarritoSchema = Schema ({
             type: Schema.ObjectId, 
             ref: 'Producto'
         },
+        variante: {
+            type: Schema.Types.ObjectId,
+            ref: "Producto_variantes",
+            default: null
+        },
         cantidad: {
             type: Number,
-            req: true
+            required: true
         },
     } ]
 });

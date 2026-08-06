@@ -10,7 +10,10 @@ import carritoRoutes from './routes/carrito.js';
 import categoriaRoutes from './routes/categoria.js';
 import colorRoutes from './routes/color.js';
 import tallaRoutes from './routes/talla.js'; 
-import slugRoutes from './routes/slug.js'; 
+import imagenesRoutes from './routes/imagenes.js'; 
+import producto_variantesRoutes from './routes/producto_variantes.js';
+import direccionRoutes from './routes/direccion.js';
+import pedidoRoutes from './routes/pedido.js';
 
 const app = express();
 
@@ -42,7 +45,13 @@ const startServer = async () => {
     
     app.use('/api/talla', tallaRoutes);
 
-    app.use('/api/slug', slugRoutes);
+    app.use('/api/variantes', producto_variantesRoutes);
+
+    app.use('/api/imagenes', imagenesRoutes);
+
+    app.use('/api/direccion', direccionRoutes);
+
+    app.use('/api/pedidos', pedidoRoutes);
 
     
 
