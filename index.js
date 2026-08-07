@@ -56,10 +56,10 @@ const startServer = async () => {
     
 
 
-    
+    const PORT = process.env.PORT || 4000;
 
-    app.listen(4000, () => {
-      console.log("Servidor en http://localhost:4000");
+    app.listen(PORT, () => {
+      console.log(`Servidor corriendo en puerto ${PORT}`);
     });
   }
   catch(error){
