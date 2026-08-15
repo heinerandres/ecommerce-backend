@@ -17,7 +17,8 @@ router.post(
         check('valor', 'El valor de la talla es obligatorio').not().isEmpty(),
         validarCampos
     ] , 
-    crearTalla );
+    crearTalla 
+);
 
 router.get(
     '/',
